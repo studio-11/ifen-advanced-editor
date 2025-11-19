@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFEN Advanced Editor - Démonstration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Barlow Semi Condensed', sans-serif;
+            background: linear-gradient(135deg, #eaf8f8 0%, #f5f5f5 100%);
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            background: linear-gradient(135deg, #00b2bb 0%, #1F154d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .demo-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .demo-header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .demo-section h2 {
+            color: #1F154d;
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .demo-section h3 {
+            color: #00b2bb;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        #editor-container {
+            margin-bottom: 20px;
+        }
+
+        .demo-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .demo-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Barlow Semi Condensed', sans-serif;
+        }
+
+        .demo-btn-primary {
+            background: linear-gradient(135deg, #00b2bb 0%, #1F154d 100%);
+            color: white;
+        }
+
+        .demo-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 178, 187, 0.4);
+        }
+
+        .demo-btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .demo-btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .output-box {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .output-box pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li:last-child {
+            border-bottom: none;
+        }
+
+        .feature-list li::before {
+            content: "✓";
+            color: #00b2bb;
+            font-weight: bold;
+            font-size: 18px;
+            margin-right: 12px;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .color-swatch {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .color-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .color-label {
+            font-size: 12px;
+            color: #666;
+            text-align: center;
+        }
+
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #d32f2f;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .demo-header {
+                padding: 20px;
+            }
+
+            .demo-header h1 {
+                font-size: 24px;
+            }
+
+            .demo-section {
+                padding: 20px;
+            }
+
+            .demo-buttons {
+                flex-direction: column;
+            }
+
+            .demo-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <!-- En-tête -->
+        <div class="demo-header">
+            <h1>🎨 IFEN Advanced Text Editor</h1>
+            <p>Éditeur de texte WYSIWYG avec formatage avancé, couleurs, listes, alignement et liens</p>
+        </div>
+
+        <!-- Section : Éditeur -->
+        <div class="demo-section">
+            <h2>📝 Éditeur en action</h2>
+            <p style="margin-bottom: 20px; color: #666;">
+                Testez toutes les fonctionnalités ci-dessous. Le texte est affiché tel qu'il sera sauvegardé.
+            </p>
+            
+            <div id="editor-container"></div>
+
+            <div class="demo-buttons">
+                <button class="demo-btn demo-btn-primary" onclick="showHTML()">📄 Voir le HTML</button>
+                <button class="demo-btn demo-btn-primary" onclick="showPlainText()">📝 Voir le texte brut</button>
+                <button class="demo-btn demo-btn-secondary" onclick="fillExample()">✨ Remplir exemple</button>
+                <button class="demo-btn demo-btn-secondary" onclick="clearEditor()">🗑️ Vider</button>
+            </div>
+
+            <div id="output" class="output-box" style="display: none;">
+                <pre id="output-content"></pre>
+            </div>
+        </div>
+
+        <!-- Section : Fonctionnalités -->
+        <div class="demo-section">
+            <h2>✨ Fonctionnalités</h2>
+            
+            <ul class="feature-list">
+                <li><strong>Bold & Italic</strong> - Formatage de texte (Ctrl+B / Ctrl+I)</li>
+                <li><strong>Palette de couleurs IFEN</strong> - 8 couleurs prédéfinies conformes à la charte</li>
+                <li><strong>Listes</strong> - À puces et numérotées</li>
+                <li><strong>Alignement</strong> - Gauche, centre, droite, justifié</li>
+                <li><strong>Liens hypertextes</strong> - Avec modal d'insertion (Ctrl+K)</li>
+                <li><strong>Coller texte brut</strong> - Nettoyage automatique du code Word/HTML</li>
+                <li><strong>Compteur de caractères</strong> - En temps réel</li>
+                <li><strong>Style IFEN intégré</strong> - Charte graphique complète</li>
+            </ul>
+
+            <h3>🎨 Palette de couleurs IFEN</h3>
+            <div class="color-palette">
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: #1F154d;"></div>
+                    <div class="color-label">Violet IFEN</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: #00b2bb;"></div>
+                    <div class="color-label">Turquoise IFEN</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: #333333;"></div>
+                    <div class="color-label">Gris foncé</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: #000000;"></div>
+                    <div class="color-label">Noir</div>
+                </div>
+                <div class="color-swatch">
+                    <div class="color-box" style="background-color: #d32f2f;"></div>
+                    <div class="color-label">Rouge alerte</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section : Utilisation -->
+        <div class="demo-section">
+            <h2>💻 Utilisation</h2>
+            
+            <h3>1. Inclure le fichier JavaScript</h3>
+            <div class="output-box">
+                <pre>&lt;script src="ifen-advanced-editor.js"&gt;&lt;/script&gt;</pre>
+            </div>
+
+            <h3>2. Créer un container HTML</h3>
+            <div class="output-box">
+                <pre>&lt;div id="editor-container"&gt;&lt;/div&gt;</pre>
+            </div>
+
+            <h3>3. Initialiser l'éditeur</h3>
+            <div class="output-box">
+                <pre>const editor = IFENAdvancedEditor.create('#editor-container', {
+  placeholder: 'Entrez votre texte ici...',
+  minHeight: '300px',
+  maxHeight: '600px',
+  showCharCount: true
+});</pre>
+            </div>
+
+            <h3>4. Méthodes disponibles</h3>
+            <div class="output-box">
+                <pre>// Obtenir le contenu HTML
+const html = editor.getValue();
+
+// Définir le contenu
+editor.setValue('&lt;strong&gt;Texte en gras&lt;/strong&gt;');
+
+// Obtenir le texte brut
+const text = editor.getPlainText();
+
+// Vider l'éditeur
+editor.clear();
+
+// Focus
+editor.focus();
+
+// Désactiver/Activer
+editor.disable();
+editor.enable();
+
+// Détruire
+editor.destroy();</pre>
+            </div>
+        </div>
+
+        <!-- Section : Options -->
+        <div class="demo-section">
+            <h2>⚙️ Options de configuration</h2>
+            
+            <div class="output-box">
+                <pre>const options = {
+  // Texte du placeholder
+  placeholder: 'Entrez votre texte ici...',
+  
+  // Hauteur minimale
+  minHeight: '300px',
+  
+  // Hauteur maximale
+  maxHeight: '600px',
+  
+  // Afficher le compteur de caractères
+  showCharCount: true,
+  
+  // Palette de couleurs personnalisée
+  colors: [
+    { name: 'Violet IFEN', value: '#1F154d' },
+    { name: 'Turquoise IFEN', value: '#00b2bb' },
+    // ... autres couleurs
+  ]
+};</pre>
+            </div>
+        </div>
+
+        <!-- Section : Intégration Moodle -->
+        <div class="demo-section">
+            <h2>🎓 Intégration dans Moodle</h2>
+            
+            <h3>Dans un smart-element</h3>
+            <div class="output-box">
+                <pre>// 1. Inclure le script dans votre page
+&lt;script src="/ifen_js/ifen-advanced-editor.js"&gt;&lt;/script&gt;
+
+// 2. Créer le container
+&lt;div id="mon-editeur"&gt;&lt;/div&gt;
+
+// 3. Initialiser
+&lt;script&gt;
+  const editor = IFENAdvancedEditor.create('#mon-editeur');
+  
+  // Charger du contenu existant
+  editor.setValue(contenuExistant);
+  
+  // Sauvegarder
+  function sauvegarder() {
+    const html = editor.getValue();
+    // Envoyer à votre API PHP
+    fetch('/ifen_html/activity_element/save_api.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content: html })
+    });
+  }
+&lt;/script&gt;</pre>
+            </div>
+        </div>
+
+        <!-- Section : Raccourcis clavier -->
+        <div class="demo-section">
+            <h2>⌨️ Raccourcis clavier</h2>
+            
+            <ul class="feature-list">
+                <li><code>Ctrl+B</code> - Mettre en gras</li>
+                <li><code>Ctrl+I</code> - Mettre en italique</li>
+                <li><code>Ctrl+K</code> - Insérer un lien</li>
+                <li><code>Ctrl+V</code> - Coller (texte brut automatiquement)</li>
+            </ul>
+        </div>
+
+        <!-- Footer -->
+        <div class="demo-section" style="text-align: center; background: linear-gradient(135deg, #00b2bb 0%, #1F154d 100%); color: white;">
+            <h2 style="color: white;">🚀 IFEN Advanced Editor v1.0</h2>
+            <p>Créé pour l'Institut de Formation de l'Éducation Nationale (IFEN)</p>
+            <p style="margin-top: 10px; opacity: 0.9;">
+                Standalone • WYSIWYG • Charte IFEN • Moodle 4.4.9+
+            </p>
+        </div>
+    </div>
+
+    <!-- Script de l'éditeur -->
+    <script src="ifen-advanced-editor.js"></script>
+
+    <!-- Script de démonstration -->
+    <script>
+        // Initialiser l'éditeur
+        const editor = IFENAdvancedEditor.create('#editor-container', {
+            placeholder: 'Commencez à taper ici... Essayez les boutons de la toolbar !',
+            minHeight: '350px',
+            maxHeight: '600px',
+            showCharCount: true
+        });
+
+        // Fonction pour afficher le HTML
+        function showHTML() {
+            const html = editor.getValue();
+            const output = document.getElementById('output');
+            const outputContent = document.getElementById('output-content');
+            
+            outputContent.textContent = html;
+            output.style.display = 'block';
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Fonction pour afficher le texte brut
+        function showPlainText() {
+            const text = editor.getPlainText();
+            const output = document.getElementById('output');
+            const outputContent = document.getElementById('output-content');
+            
+            outputContent.textContent = text;
+            output.style.display = 'block';
+            output.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Fonction pour remplir avec un exemple
+        function fillExample() {
+            const exampleHTML = `<p><strong style="color: #1F154d;">Bienvenue sur l'éditeur IFEN !</strong></p>
+
+<p>Cet éditeur permet de créer du <strong>contenu formaté</strong> avec <em>style</em> et <span style="color: #00b2bb;">couleurs</span>.</p>
+
+<p><strong>Fonctionnalités principales :</strong></p>
+<ul>
+<li>Formatage de texte (gras, italique)</li>
+<li>Palette de couleurs IFEN</li>
+<li>Listes à puces et numérotées</li>
+<li>Alignement du texte</li>
+<li>Liens hypertextes</li>
+</ul>
+
+<p style="text-align: center;"><strong>Texte centré avec style IFEN</strong></p>
+
+<p>Pour plus d'informations, visitez le <a href="https://learningsphere.ifen.lu" target="_blank" rel="noopener noreferrer">site IFEN</a>.</p>
+
+<p><span style="color: #d32f2f;">⚠️ Important :</span> L'éditeur nettoie automatiquement le code Word et HTML parasite.</p>`;
+            
+            editor.setValue(exampleHTML);
+            editor.focus();
+        }
+
+        // Fonction pour vider l'éditeur
+        function clearEditor() {
+            if (confirm('Êtes-vous sûr de vouloir vider l\'éditeur ?')) {
+                editor.clear();
+                document.getElementById('output').style.display = 'none';
+            }
+        }
+
+        // Remplir automatiquement un exemple au chargement
+        window.addEventListener('load', function() {
+            setTimeout(fillExample, 500);
+        });
+    </script>
+</body>
+</html>
